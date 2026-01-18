@@ -669,7 +669,13 @@ export default class WidgetSDK {
                         const count = this.opt[opt.id].length;
                         this.opt[opt.id].length = values.length;
                         if (count < values.length) {
-                            this.opt[opt.id].fill((opt.type === 'template'? opt.default:{...opt.default}), count); //TODO if default is object ?
+                            // FIX: Create a NEW object for each slot instead of using .fill()
+                            // which would share the same object reference across all slots
+                            for (let i = count; i < values.length; i++) {
+                                this.opt[opt.id][i] = opt.type === 'template' 
+                                    ? opt.default 
+                                    : {...opt.default};
+                            }
                         }
                     } else {
                         this.opt[opt.id] = [];
